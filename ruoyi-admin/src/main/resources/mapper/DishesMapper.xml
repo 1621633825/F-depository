@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.DishesMapper">
+    
+    <resultMap type="Dishes" id="DishesResult">
+        <result property="id"    column="id"    />
+        <result property="dishesName"    column="dishes_name"    />
+        <result property="dishesPrice"    column="dishes_price"    />
+        <result property="reserveNum"    column="reserve_num"    />
+        <result property="imagePath"    column="image_path"    />
+        <result property="dishesType"    column="dishes_type"    />
+        <result property="state"    column="state"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectDishesVo">
+        select id, dishes_name, dishes_price, reserve_num, image_path, dishes_type, `state`, create_time, create_by, update_time, update_by from dishes
+    </sql>
+
+    <select id="selectDishesList" parameterType="Dishes" resultMap="DishesResult">
+        <include refid="selectDishesVo"/>
+        <where>  
+            <if test="dishesName != null  and dishesName != ''"> and dishes_name like concat('%', #{dishesName}, '%')</if>
+            <if test="dishesPrice != null "> and dishes_price = #{dishesPrice}</if>
+            <if test="reserveNum != null "> and reserve_num = #{reserveNum}</if>
+            <if test="imagePath != null  and imagePath != ''"> and image_path = #{imagePath}</if>
+            <if test="dishesType != null and dishesType != ''"> and dishes_type = #{dishesType}</if>
+            <if test="state != null "> and state = #{state}</if>
+        </where>
+    </select>
+    
+    <select id="selectDishesById" parameterType="Long" resultMap="DishesResult">
+        <include refid="selectDishesVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDishes" parameterType="Dishes" useGeneratedKeys="true" keyProperty="id">
+        insert into dishes
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dishesName != null">dishes_name,</if>
+            <if test="dishesPrice != null">dishes_price,</if>
+            <if test="reserveNum != null">reserve_num,</if>
+            <if test="imagePath != null">image_path,</if>
+            <if test="dishesType != null">dishes_type,</if>
+            <if test="state != null">state,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dishesName != null">#{dishesName},</if>
+            <if test="dishesPrice != null">#{dishesPrice},</if>
+            <if test="reserveNum != null">#{reserveNum},</if>
+            <if test="imagePath != null">#{imagePath},</if>
+            <if test="dishesType != null">#{disheseType},</if>
+            <if test="state != null">#{state},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDishes" parameterType="Dishes">
+        update dishes
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dishesName != null">dishes_name = #{dishesName},</if>
+            <if test="dishesPrice != null">dishes_price = #{dishesPrice},</if>
+            <if test="reserveNum != null">reserve_num = #{reserveNum},</if>
+            <if test="imagePath != null">image_path = #{imagePath},</if>
+            <if test="dishesType != null and dishesType != ''">dishes_type = #{dishesType},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDishesById" parameterType="Long">
+        delete from dishes where id = #{id}
+    </delete>
+
+    <delete id="deleteDishesByIds" parameterType="String">
+        delete from dishes where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

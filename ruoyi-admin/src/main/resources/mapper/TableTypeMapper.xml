@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.TableTypeMapper">
+    
+    <resultMap type="TableType" id="TableTypeResult">
+        <result property="id"    column="id"    />
+        <result property="tableId"    column="table_id"    />
+        <result property="state"    column="state"    />
+    </resultMap>
+
+    <sql id="selectTableTypeVo">
+        select id, table_id, state from table_type
+    </sql>
+
+    <select id="selectTableTypeList" parameterType="TableType" resultMap="TableTypeResult">
+        <include refid="selectTableTypeVo"/>
+        <where>  
+            <if test="tableId != null  and tableId != ''"> and table_id = #{tableId}</if>
+            <if test="state != null "> and state = #{state}</if>
+        </where>
+    </select>
+    
+    <select id="selectTableTypeById" parameterType="Long" resultMap="TableTypeResult">
+        <include refid="selectTableTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTableType" parameterType="TableType">
+        insert into table_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="tableId != null and tableId != ''">table_id,</if>
+            <if test="state != null">state,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="tableId != null and tableId != ''">#{tableId},</if>
+            <if test="state != null">#{state},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTableType" parameterType="TableType">
+        update table_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tableId != null and tableId != ''">table_id = #{tableId},</if>
+            <if test="state != null">state = #{state},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTableTypeById" parameterType="Long">
+        delete from table_type where id = #{id}
+    </delete>
+
+    <delete id="deleteTableTypeByIds" parameterType="String">
+        delete from table_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

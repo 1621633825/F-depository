@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.DishesTypeMapper">
+    
+    <resultMap type="DishesType" id="DishesTypeResult">
+        <result property="id"    column="id"    />
+        <result property="typeName"    column="type_name"    />
+    </resultMap>
+
+    <sql id="selectDishesTypeVo">
+        select id, type_name from dishes_type
+    </sql>
+
+    <select id="selectDishesTypeList" parameterType="DishesType" resultMap="DishesTypeResult">
+        <include refid="selectDishesTypeVo"/>
+        <where>  
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDishesTypeById" parameterType="Long" resultMap="DishesTypeResult">
+        <include refid="selectDishesTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <!-- 查询菜品类型不分页 -->
+    <select id="selectDishesTypeListMap" resultType="com.ruoyi.common.core.domain.entity.SysDictData">
+        select id dictValue, type_name dictLabel from dishes_type
+    </select>
+
+    <insert id="insertDishesType" parameterType="DishesType">
+        insert into dishes_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="typeName != null">type_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="typeName != null">#{typeName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDishesType" parameterType="DishesType">
+        update dishes_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeName != null">type_name = #{typeName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDishesTypeById" parameterType="Long">
+        delete from dishes_type where id = #{id}
+    </delete>
+
+    <delete id="deleteDishesTypeByIds" parameterType="String">
+        delete from dishes_type where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

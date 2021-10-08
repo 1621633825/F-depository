@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.OrderDetailMapper">
+    
+    <resultMap type="OrderDetail" id="OrderDetailResult">
+        <result property="id"    column="id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="disheId"    column="dishe_id"    />
+        <result property="dishePrice"    column="dishe_price"    />
+        <result property="disheNum"    column="dishe_num"    />
+        <result property="disheTotal"    column="dishe_total"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectOrderDetailVo">
+        select id, order_id, dishe_id, dishe_price, dishe_num, dishe_total, create_time, create_by, update_time, update_by from order_detail
+    </sql>
+
+    <select id="selectOrderDetailList" parameterType="OrderDetail" resultMap="OrderDetailResult">
+        <include refid="selectOrderDetailVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="disheId != null "> and dishe_id = #{disheId}</if>
+            <if test="dishePrice != null "> and dishe_price = #{dishePrice}</if>
+            <if test="disheNum != null "> and dishe_num = #{disheNum}</if>
+            <if test="disheTotal != null "> and dishe_total = #{disheTotal}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderDetailById" parameterType="Long" resultMap="OrderDetailResult">
+        <include refid="selectOrderDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOrderDetail" parameterType="OrderDetail">
+        insert into order_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="disheId != null">dishe_id,</if>
+            <if test="dishePrice != null">dishe_price,</if>
+            <if test="disheNum != null">dishe_num,</if>
+            <if test="disheTotal != null">dishe_total,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="disheId != null">#{disheId},</if>
+            <if test="dishePrice != null">#{dishePrice},</if>
+            <if test="disheNum != null">#{disheNum},</if>
+            <if test="disheTotal != null">#{disheTotal},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderDetail" parameterType="OrderDetail">
+        update order_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="disheId != null">dishe_id = #{disheId},</if>
+            <if test="dishePrice != null">dishe_price = #{dishePrice},</if>
+            <if test="disheNum != null">dishe_num = #{disheNum},</if>
+            <if test="disheTotal != null">dishe_total = #{disheTotal},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrderDetailById" parameterType="Long">
+        delete from order_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderDetailByIds" parameterType="String">
+        delete from order_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

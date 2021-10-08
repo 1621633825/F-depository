@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改菜品')" />
+    <style type="text/css">
+        .col-sm-3 {
+            width: 20vw;
+            padding-right: 0;
+        }
+        .form-group {
+            float: left;
+        }
+        .form-horizontal .form-group {
+            margin-right: 0;
+            margin-left: 0;
+        }
+        .visible-table {
+            visibility: visible;
+            float: left;
+            height: 10vh;
+            width: 40vw;
+        }
+        .d-dishes-image {
+            float: left;
+            width: 40vw;
+            margin-left: -28vw;
+        }
+        .d-dishes-image .col-sm-3 {
+            margin-left: -10vw;
+        }
+        .img-lg {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-dishes-edit" th:object="${dishes}">
+            <input id="id" name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">菜品名称：</label>
+                <div class="col-sm-3">
+                    <input name="dishesName" th:field="*{dishesName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">菜品单价：</label>
+                <div class="col-sm-3">
+                    <input name="dishesPrice" th:field="*{dishesPrice}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">库存数量：</label>
+                <div class="col-sm-3">
+                    <input name="reserveNum" th:field="*{reserveNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">类型：</label>
+                <div class="col-sm-3">
+                    <select name="dishesType" class="form-control">
+                        <option th:field="*{dishesType}"
+                                th:each="dict:${dishesTypeAll}"
+                                th:text="${dict.typeName}"
+                                th:value="${dict.id}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">状态：</label>
+                <div class="col-sm-3">
+                    <select name="state" class="form-control" th:with="type=${@dict.getType('dishes_status')}">
+                        <option th:field="*{state}"
+                                th:each="dict : ${type}"
+                                th:text="${dict.dictLabel}"
+                                th:value="${dict.dictValue}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="visible-table" style="visibility: visible"></div>
+            <div class="d-dishes-image">
+                <label class="col-sm-3 control-label">菜品参考图片：</label>
+                <div class="imageBox">
+                    <p class="user-info-head" onclick="avatar()"><img class="img-lg" th:src="*{imagePath}"></p>
+                    <p><a href="javascript:avatar()" style="margin-left: 30%">修改图片</a></p>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "dishes";
+        $("#form-dishes-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-dishes-edit').serialize());
+            }
+        }
+
+        /*菜品管理-修改图片*/
+        function avatar() {
+            var id = $("#id").val();
+            var url = ctx + 'dishes/avatar/' + id;
+            top.layer.open({
+                type: 2,
+                area: ['1000px', '500px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: "修改图片",
+                content: url,
+                btn: ['确定', '关闭'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                yes: function(index, layero) {
+                    var iframeWin = layero.find('iframe')[0];
+                    iframeWin.contentWindow.submitHandler(index, layero);
+                },
+                cancel: function(index) {
+                    return true;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
