@@ -96,7 +96,7 @@ public class OrderController extends BaseController
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
         Order order = orderService.selectOrderById(id);
-        mmap.put("order", order);
+        mmap.put("dishesOrder", order);
         return prefix + "/edit";
     }
 

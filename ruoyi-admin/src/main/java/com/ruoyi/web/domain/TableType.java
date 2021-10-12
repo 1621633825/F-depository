@@ -1,5 +1,7 @@
 package com.ruoyi.web.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -16,6 +18,7 @@ public class TableType extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键ID */
+    @JsonSerialize(using= ToStringSerializer.class)
     private Long id;
 
     /** 桌位编号 */

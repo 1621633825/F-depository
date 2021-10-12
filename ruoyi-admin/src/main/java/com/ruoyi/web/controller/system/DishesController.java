@@ -1,18 +1,28 @@
 package com.ruoyi.web.controller.system;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.utils.SnowFlake;
 import com.ruoyi.web.domain.Dishes;
 import com.ruoyi.web.domain.DishesType;
+import com.ruoyi.web.domain.Order;
 import com.ruoyi.web.service.IDishesTypeService;
+import com.ruoyi.web.service.IOrderService;
 import com.ruoyi.web.service.impl.DishesTypeServiceImpl;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -44,6 +54,12 @@ public class DishesController extends BaseController
 
     @Autowired
     private IDishesTypeService dishesTypeService;
+
+    @Autowired
+    private IOrderService iOrderService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @GetMapping()
     public String dishes()
@@ -187,8 +203,8 @@ public class DishesController extends BaseController
         return toAjax(dishesService.deleteDishesByIds(ids));
     }
 
-    @ResponseBody
-    @GetMapping("/test")
+//    @ResponseBody
+//    @GetMapping("/test")
     public void test(String message) {
         ActiveXComponent sap = new ActiveXComponent("Sapi.SpVoice");
         try {
@@ -208,6 +224,32 @@ public class DishesController extends BaseController
             // 关闭应用程序连接
             sap.safeRelease();
         }
+    }
+
+    /**
+     * 模拟订单生成
+     */
+    @ResponseBody
+    @GetMapping("/test")
+    public void orderInsert() {
+        // 订单生成
+        Order order = new Order();
+        order.setId(SnowFlake.nextId());
+        order.setPeopleNum(4L);
+        order.setTableNumber("A01");
+        order.setTotalAmount(new BigDecimal(168));
+        order.setState(1);
+        // 模拟新增订单
+        iOrderService.insertOrder(order);
+        // 发送消息队列
+        String messageId = String.valueOf(UUID.randomUUID());
+        String messageData = "您好，您有一份新的订单，请及时处理！";
+        String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Map<String, Object> manMap = new HashMap<>();
+        manMap.put("messageId", messageId);
+        manMap.put("messageData", messageData);
+        manMap.put("createTime", createTime);
+        rabbitTemplate.convertAndSend("topicExchange", "topic.order", manMap);
     }
 
 }

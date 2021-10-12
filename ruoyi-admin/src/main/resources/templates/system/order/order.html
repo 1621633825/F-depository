@@ -40,7 +40,7 @@
                 <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:order:add">
                     <i class="fa fa-plus"></i> 添加
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:order:edit">
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" >
                     <i class="fa fa-edit"></i> 修改
                 </a>
                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:order:remove">
@@ -60,6 +60,7 @@
         var editFlag = [[${@permission.hasPermi('system:order:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:order:remove')}]];
         var prefix = ctx + "order";
+        var datas = [[${@dict.getType('order_status')}]];
 
         $(function() {
             var options = {
@@ -91,7 +92,14 @@
                 },
                 {
                     field: 'state',
-                    title: '状态：0未制作，1制作中'
+                    title: '状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(datas, row.state);
+                    }
+                },
+                {
+                    field: 'createTime',
+                    title: "创建时间"
                 },
                 {
                     title: '操作',
