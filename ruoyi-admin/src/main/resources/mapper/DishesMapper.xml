@@ -58,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dishesPrice != null">#{dishesPrice},</if>
             <if test="reserveNum != null">#{reserveNum},</if>
             <if test="imagePath != null">#{imagePath},</if>
-            <if test="dishesType != null">#{disheseType},</if>
+            <if test="dishesType != null">#{dishesType},</if>
             <if test="state != null">#{state},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="createBy != null">#{createBy},</if>

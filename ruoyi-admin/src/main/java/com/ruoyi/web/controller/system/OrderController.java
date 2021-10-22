@@ -1,6 +1,13 @@
 package com.ruoyi.web.controller.system;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysDictData;
+import com.ruoyi.web.domain.Dishes;
+import com.ruoyi.web.domain.DishesType;
+import com.ruoyi.web.service.IDishesService;
+import com.ruoyi.web.service.IDishesTypeService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,11 +41,40 @@ public class OrderController extends BaseController
     @Autowired
     private IOrderService orderService;
 
+    @Autowired
+    private IDishesTypeService dishesTypeService;
+
+    @Autowired
+    private IDishesService dishesService;
+
     @RequiresPermissions("system:order:view")
     @GetMapping()
     public String order()
     {
         return prefix + "/order";
+    }
+
+    /**
+     * 返回点餐页面，带上菜品类型和菜品数据
+     * @return
+     */
+    @GetMapping("/orderPage")
+    public String orderPage(String id, ModelMap mmap)
+    {
+        // 查询所有菜品类型
+        List<SysDictData> dishesTypeList = dishesTypeService.selectDishesTypeListMap();
+        // 根据类型查询菜品
+        Dishes dishes = new Dishes();
+        if(StringUtils.isNotBlank(id)) {
+            dishes.setDishesType(id);
+        } else {
+            dishes.setDishesType(dishesTypeList.get(0).getDictValue());
+        }
+        List<Dishes> dishesList = dishesService.selectDishesList(dishes);
+        mmap.put("dishesTypeList", dishesTypeList);
+        mmap.put("dishesList", dishesList);
+
+        return prefix + "/orderPage";
     }
 
     /**

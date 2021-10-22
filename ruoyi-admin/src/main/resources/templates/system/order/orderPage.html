@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('点餐页面')" />
+    <style type="text/css">
+        .div-left {
+            position: fixed;
+            z-index: 2001;
+            margin: 1vw;
+            overflow-y: auto;
+            width: 15%;
+            height: 100%;
+            background-color: currentColor;
+        }
+        .div-right {
+            position: absolute;
+            left: 16vw;
+            width: 80%;
+            height: 95%;
+            margin: 1vw;
+            overflow-y: auto;
+        }
+        .div-img {
+            float: left;
+            margin: 1vw;
+            width: 30%;
+            height: 50vh;
+        }
+        .div-img img{
+            width: 100%;
+            height: 85%;
+        }
+        .div-img span{
+            margin-left: 4vw;
+            height: 5%;
+        }
+
+        #dish-type li a:hover {
+            background: none;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div>
+    <!--  左侧菜品类型  -->
+    <div class="div-left">
+        <ul class="nav" id="dish-type">
+            <li th:each="dishesType : ${dishesTypeList}" class="dishes-type-li">
+                <a>
+                    <i class="fa fa-bar-chart-o"></i>
+                    <span class="nav-label" th:text="${dishesType.dictLabel}" th:value="${dishesType.dictValue}">一级菜单</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!--  右侧菜品页面  -->
+    <div class="div-right">
+        <div class="div-img" th:each="dishes : ${dishesList}">
+            <img th:src="${dishes.imagePath}" />
+            <span th:text=" ''+ ${dishes.dishesPrice} + '元'"></span>
+            <span th:text="${dishes.dishesName}"></span>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var prefix = "//localhost:8090/";
+
+    $(document).on('click', '.dishes-type-li', function () {
+        // 其他li变色
+        $(this).siblings().css({'background-color': '#676a6c'});
+        // 选中变色
+        $(this).css({
+            'background-color': 'cadetblue'
+        });
+        var dishesTypeId = $(this).find('span').attr('value');
+        // 根据菜品类型查询菜品
+        var param = {"dishesType": dishesTypeId};
+        var obj = $.ajax({
+            url: prefix + "dishes/list/noPage",
+            type: "post",
+            dataType: "json",
+            async: false,
+            // data : {dishes: JSON.stringify(param)}
+            data : param
+        });
+
+        dishesList = obj.responseJSON;
+        // 右边div移除子元素
+        $(".div-right").empty();
+        // 循环菜单
+        for (let i=0; i<dishesList.total; i++) {
+            let imagePath = dishesList.rows[i].imagePath;
+            let dishesPrice = dishesList.rows[i].dishesPrice;
+            let dishesName = dishesList.rows[i].dishesName;
+            let div = '<div class="div-img">'
+            +'<img src="' + imagePath + '" />'
+            +'<span>' + dishesPrice + '元</span>'
+            +'<span>' + dishesName + '</span>'
+            +'</div>';
+            // 父元素添加菜单列表
+            $(".div-right").append(div);
+        }
+    });
+
+</script>
+</body>
+</html>

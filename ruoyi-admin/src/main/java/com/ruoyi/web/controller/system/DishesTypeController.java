@@ -65,7 +65,7 @@ public class DishesTypeController extends BaseController
     public AjaxResult export(DishesType dishesType)
     {
         List<DishesType> list = dishesTypeService.selectDishesTypeList(dishesType);
-        ExcelUtil<DishesType> util = new ExcelUtil<DishesType>(DishesType.class);
+        ExcelUtil<DishesType> util = new ExcelUtil<>(DishesType.class);
         return util.exportExcel(list, "type");
     }
 

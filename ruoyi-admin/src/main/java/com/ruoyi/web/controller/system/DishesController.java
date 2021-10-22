@@ -68,14 +68,27 @@ public class DishesController extends BaseController
     }
 
     /**
-     * 查询菜品列表
+     * 查询菜品列表分页
      */
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(Dishes dishes)
     {
-
         startPage();
+        List<Dishes> list = dishesService.selectDishesList(dishes);
+
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询菜品不分页
+     * @param dishes
+     * @return
+     */
+    @PostMapping("/list/noPage")
+    @ResponseBody
+    public TableDataInfo listNoPage(Dishes dishes)
+    {
         List<Dishes> list = dishesService.selectDishesList(dishes);
 
         return getDataTable(list);
