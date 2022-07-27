@@ -29,5 +29,8 @@ public class Newtable implements Serializable {
     @ApiModelProperty(value = "名称")
     private String name;
 
+    @ApiModelProperty(value = "账户归属地址")
+    private String accountAddress;
+
 
 }

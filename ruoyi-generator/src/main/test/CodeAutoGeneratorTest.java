@@ -1,4 +1,6 @@
 import com.ruoyi.generator.autocode.DefaultMybatisPlusGenerator;
+import com.ruoyi.generator.newtable.entity.Newtable;
+import com.ruoyi.generator.util.MybatisUtil;
 import org.junit.Test;
 
 public class CodeAutoGeneratorTest {
@@ -37,4 +39,13 @@ public class CodeAutoGeneratorTest {
                 .execute();
     }
 
+    @Test
+    public void generateResultMap() {
+        // 需要生成resultMap的实体类
+        Newtable a = new Newtable();
+        System.err.println(MybatisUtil.getResultMap(Newtable.class));
+        //所有属性
+        System.out.println("------------------------------------------------------------------------");
+        System.out.println(MybatisUtil.getAllField(Newtable.class));
+    }
 }
