@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MybatisUtil {
-    // 获取bean的属性 根据属性评价 resultMap
+    // 获取bean的属性 根据属性拼接 resultMap
     // 并将驼峰修改为'_'
     public static String getResultMap(Class<?> cls) {
         StringBuilder str = new StringBuilder();
@@ -17,7 +17,7 @@ public class MybatisUtil {
         Field[] declaredFields = cls.getDeclaredFields();
         for (Field field : declaredFields) {
             if(!"serialVersionUID".equals(field.getName())) {
-                linestr = "<result column=\"" + getUpCaseReplace(field.getName()) + "\" property=\"" + field.getName() + "\" />";
+                linestr = "  <result column=\"" + getUpCaseReplace(field.getName()) + "\" property=\"" + field.getName() + "\" />";
                 linestr += "\r\n";
                 str.append(linestr);
             }
